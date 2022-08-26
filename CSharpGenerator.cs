@@ -9,11 +9,13 @@ namespace Maussoft.Mvc.ViewGen
     {
         private string _baseDirecory;
         private string _defaultNamespace;
+        private string _sessionClass;
 
-        public CSharpGenerator(string baseDirecory, string defaultNamespace)
+        public CSharpGenerator(string baseDirecory, string defaultNamespace, string sessionClass)
         {
             _baseDirecory = baseDirecory;
             _defaultNamespace = defaultNamespace;
+            _sessionClass = sessionClass;
         }
 
         public override void ConvertFile(string filename)
@@ -104,7 +106,7 @@ namespace Maussoft.Mvc.ViewGen
             }
 
             output.Append("\nnamespace " + properties["Namespace"] + "\n{\n\t");
-            output.Append("public class " + properties["Class"] + "<TSession>: " + properties["Inherits"] + "<TSession> where TSession : new()\n\t{\n\t\t");
+            output.Append("public class " + properties["Class"] + ": " + properties["Inherits"] + "\n\t{\n\t\t");
             output.Append("public override void " + functionName + "()\n\t\t{\n\t\t\t");
 
             if (properties["Type"] == "Master")
@@ -194,7 +196,7 @@ namespace Maussoft.Mvc.ViewGen
         private Dictionary<string, string> GetDefaultProperties()
         {
             Dictionary<string, string> properties = new Dictionary<string, string>();
-            properties.Add("Inherits", "Maussoft.Mvc.View");
+            properties.Add("Inherits", "Maussoft.Mvc.View<" + _sessionClass + ">");
             return properties;
         }
     }

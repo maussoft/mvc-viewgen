@@ -9,12 +9,14 @@ namespace Maussoft.Mvc.ViewGen
     {
         private string _baseDirecory;
         private string _defaultNamespace;
+        private string _sessionClass;
         private string _rootNamespace;
 
-        public VisualBasicGenerator(string baseDirecory, string defaultNamespace, string rootNamespace)
+        public VisualBasicGenerator(string baseDirecory, string defaultNamespace, string sessionClass, string rootNamespace)
         {
             _baseDirecory = baseDirecory;
             _defaultNamespace = defaultNamespace;
+            _sessionClass = sessionClass;
             _rootNamespace = rootNamespace;
         }
 
@@ -116,7 +118,7 @@ namespace Maussoft.Mvc.ViewGen
             }
 
             output.Append("\nNamespace " + properties["Namespace"] + "\n\t");
-            output.Append("Public Class " + properties["Class"] + "(Of TSession As New)\n\t\tInherits " + properties["Inherits"] + "(Of TSession)\n\t\t\n\t\t");
+            output.Append("Public Class " + properties["Class"] + "\n\t\tInherits " + properties["Inherits"] + "\n\t\t\n\t\t");
             output.Append("Public Overrides Sub " + functionName + "()\n\t\t\t");
 
             if (properties["Type"] == "Master")
@@ -208,7 +210,7 @@ namespace Maussoft.Mvc.ViewGen
         private Dictionary<string, string> GetDefaultProperties()
         {
             Dictionary<string, string> properties = new Dictionary<string, string>();
-            properties.Add("Inherits", "Global.Maussoft.Mvc.View");
+            properties.Add("Inherits", "Global.Maussoft.Mvc.View(Of " + _sessionClass + ")");
             return properties;
         }
     }

@@ -9,8 +9,9 @@ namespace Maussoft.Mvc.ViewGen
         {
             string directory = Directory.GetCurrentDirectory();
             string viewDirectory = Path.Combine(directory, "Views");
-            string viewNamespace = null;
             string rootNamespace = FindRootNamespaceInProjectFile(directory, "*.csproj");
+            string viewNamespace = null;
+            string sessionClass = null;
             string language = "C#";
             if (rootNamespace == null)
             {
@@ -22,20 +23,18 @@ namespace Maussoft.Mvc.ViewGen
                 Log.LogMessage("Could not find project file (*.csproj or *.vbproj)");
                 return false;
             }
-            if (viewNamespace == null)
-            {
-                viewNamespace = rootNamespace + '.' + "Views";
-            }
+            viewNamespace = rootNamespace + '.' + "Views";
+            sessionClass = rootNamespace + '.' + "Session";
             string[] files = Directory.GetFiles(viewDirectory, "*.aspx", SearchOption.AllDirectories);
 
             Generator generator;
             if (language == "C#")
             {
-                generator = new CSharpGenerator(viewDirectory, viewNamespace);
+                generator = new CSharpGenerator(viewDirectory, viewNamespace, sessionClass);
             }
             else
             {
-                generator = new VisualBasicGenerator(viewDirectory, viewNamespace, rootNamespace);
+                generator = new VisualBasicGenerator(viewDirectory, viewNamespace, sessionClass, rootNamespace);
             }
 
             foreach (string filename in files)
